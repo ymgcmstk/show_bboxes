@@ -39,7 +39,7 @@ $(function(){
 	addbr(curid);
 	return;
     }
-    function addBBox(URL, curid, x1, x2, y1, y2, label, curCount) {
+    function addBBox(URL, curid, x1, y1, x2, y2, label, curCount) {
 	var cnvID =  'cnv' + curid.toString()
 	var ctx = $('#' + cnvID)[0].getContext('2d');
 	var thisColor = colors[curCount % colors.length];
