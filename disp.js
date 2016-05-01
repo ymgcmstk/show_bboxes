@@ -35,6 +35,8 @@ $(function(){
 			bboxArray[i][5]);
 	    }
 	}
+	addbr(curid);
+	addbr(curid);
 	return;
     }
     function addBBox(URL, curid, x1, x2, y1, y2, label, curCount) {
@@ -46,6 +48,11 @@ $(function(){
 	$('#' + cnvID + 'div').append(
 	    '<div style="color: ' + thisColor + ';">' + label + '</div>'
 	);
+	return;
+    }
+    function addbr(curid) {
+	var cnvID =  'cnv' + curid.toString()
+	$('#' + cnvID + 'div').append('<br>');
 	return;
     }
     function rewriteBody(filePath) {
