@@ -1,5 +1,5 @@
 $(function(){
-    var colors = ['blue', 'navy', 'green', 'red', 'purple', 'maroon', 'gray'];
+    var colors = ['blue', 'green', 'navy', 'red', 'purple', 'maroon', 'gray'];
     function csv2Array(filePath) {
 	var csvData = new Array();
 	var data = new XMLHttpRequest();
@@ -30,7 +30,6 @@ $(function(){
 	    var ctx = $('#' + cnvID)[0].getContext('2d');
 	    ctx.drawImage(img, 0, 0);
 	    for (var i = 0; i < bboxArray.length; i++) {
-		// addBBox(URL, curid, x1, x2, y1, y2, label, curCount);
 		addBBox(URL, curid, bboxArray[i][0], bboxArray[i][1],
 			bboxArray[i][2], bboxArray[i][3], bboxArray[i][4],
 			bboxArray[i][5]);
@@ -49,8 +48,9 @@ $(function(){
 	);
 	return;
     }
-    function rewriteBody() {
-	var targArray = csv2Array(getCSVPath());
+    function rewriteBody(filePath) {
+	$('#images').empty();
+	var targArray = csv2Array(filePath);
 	var prevURL = '';
 	var count = 0;
 	var curURLCount = 0;
@@ -58,7 +58,7 @@ $(function(){
 	for (var i = 0; i < targArray.length; i++) {
 	    curURLCount++;
 	    if (prevURL != targArray[i][0]) {
-		curURLCount = 0; // いらない気もする
+		curURLCount = 0; // remove this line if you wanna do so
 		if (bboxArray.length > 0) {
 		    addCanvas(prevURL, count++, bboxArray);
 		}
@@ -77,5 +77,14 @@ $(function(){
     function getCSVPath() {
 	return $('#images').attr('data-csv');
     }
-    rewriteBody();
+
+    rewriteBody(getCSVPath());
+
+    $('#submit').on('click', function() {
+	if($('#text').val() == null) {
+            return;
+	}
+	rewriteBody($('#text').val());
+    });
+
 });
