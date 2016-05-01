@@ -8,7 +8,7 @@ $(function(){
 	var LF = String.fromCharCode(10);
 	var lines = data.responseText.split(LF);
 	for (var i = 0; i < lines.length;++i) {
-	    var cells = lines[i].split(",");
+	    var cells = lines[i].replace('"', '').replace('"', '').split(",");
 	    // TODO: sanitize
 	    if( cells.length != 1 ) {
 		csvData.push(cells);
@@ -16,7 +16,7 @@ $(function(){
 	}
 	return csvData;
     }
-    function addCanvas(URL, curid, x1, x2, y1, y2, label, curCount) {
+    function addCanvas(URL, curid, bboxArray) {
 	var cnvID =  'cnv' + curid.toString();
 	var img = new Image();
 	$('#images').append('<div id="' + cnvID + 'div"></div>');
@@ -27,17 +27,22 @@ $(function(){
 		    img.width + '" height="' +
 		    img.height + '"></canvas>'
 	    );
-	    var ctx = $('#' + cnvID).getContext('2d');
+	    var ctx = $('#' + cnvID)[0].getContext('2d');
 	    ctx.drawImage(img, 0, 0);
-	    addBBox(URL, curid, x1, x2, y1, y2, label, curCount);
+	    for (var i = 0; i < bboxArray.length; i++) {
+		// addBBox(URL, curid, x1, x2, y1, y2, label, curCount);
+		addBBox(URL, curid, bboxArray[i][0], bboxArray[i][1],
+			bboxArray[i][2], bboxArray[i][3], bboxArray[i][4],
+			bboxArray[i][5]);
+	    }
 	}
 	return;
     }
     function addBBox(URL, curid, x1, x2, y1, y2, label, curCount) {
 	var cnvID =  'cnv' + curid.toString()
-	var ctx = $('#' + cnvID).getContext('2d');
+	var ctx = $('#' + cnvID)[0].getContext('2d');
 	var thisColor = colors[curCount % colors.length];
-	ctx.fillStyle = thisColor;
+	ctx.strokeStyle = thisColor;
 	ctx.strokeRect(x1, y1, x2-x1, y2-y1);
 	$('#' + cnvID + 'div').append(
 	    '<div style="color: ' + thisColor + ';">' + label + '</div>'
@@ -49,19 +54,23 @@ $(function(){
 	var prevURL = '';
 	var count = 0;
 	var curURLCount = 0;
+	var bboxArray = [];
 	for (var i = 0; i < targArray.length; i++) {
 	    curURLCount++;
 	    if (prevURL != targArray[i][0]) {
 		curURLCount = 0; // いらない気もする
-		addCanvas(targArray[i][0], count++, targArray[i][1],
-			  targArray[i][2], targArray[i][3], targArray[i][4],
-			  targArray[i][5], curURLCount);
+		if (bboxArray.length > 0) {
+		    addCanvas(prevURL, count++, bboxArray);
+		}
 		prevURL = targArray[i][0];
-	    } else {
-		addBBox(targArray[i][0], count, targArray[i][1],
-			targArray[i][2], targArray[i][3], targArray[i][4],
-			targArray[i][5], curURLCount);
+		bboxArray = [];
 	    }
+	    bboxArray.push([targArray[i][1], targArray[i][2],
+			    targArray[i][3], targArray[i][4],
+			    targArray[i][5], curURLCount])
+	}
+	if (bboxArray.length > 0) {
+	    addCanvas(prevURL, count++, bboxArray);
 	}
 	return;
     }
