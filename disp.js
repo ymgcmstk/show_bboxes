@@ -8,7 +8,7 @@ $(function(){
 	var LF = String.fromCharCode(10);
 	var lines = data.responseText.split(LF);
 	for (var i = 0; i < lines.length;++i) {
-	    var cells = lines[i].replace('"', '').replace('"', '').split(",");
+	    var cells = lines[i].replace(/"/g, '').split(",");
 	    // TODO: sanitize
 	    if( cells.length != 1 ) {
 		csvData.push(cells);
@@ -19,7 +19,7 @@ $(function(){
     function addCanvas(URL, curid, bboxArray) {
 	var cnvID =  'cnv' + curid.toString();
 	var img = new Image();
-	$('#images').append('<div id="' + cnvID + 'div"></div>');
+	$('#images').append('<div id="' + cnvID + 'div"><div>' + URL + '</div></div>');
 	img.src = URL;
 	img.onload = function() {
 	    $('#' + cnvID + 'div').append(
@@ -34,9 +34,9 @@ $(function(){
 			bboxArray[i][2], bboxArray[i][3], bboxArray[i][4],
 			bboxArray[i][5]);
 	    }
+	    addbr(curid);
+	    addbr(curid);
 	}
-	addbr(curid);
-	addbr(curid);
 	return;
     }
     function addBBox(URL, curid, x1, y1, x2, y2, label, curCount) {
@@ -57,6 +57,7 @@ $(function(){
     }
     function rewriteBody(filePath) {
 	$('#images').empty();
+	$('#images').append('<h1>' + filePath + '</h1>');
 	var targArray = csv2Array(filePath);
 	var prevURL = '';
 	var count = 0;
@@ -88,6 +89,16 @@ $(function(){
     rewriteBody(getCSVPath());
 
     $('#submit').on('click', function() {
+	if($('#text').val() == null) {
+            return;
+	}
+	rewriteBody($('#text').val());
+    });
+
+    $('#text').keypress(function(e) {
+	if (e.which != 13) {
+	    return;
+	}
 	if($('#text').val() == null) {
             return;
 	}
