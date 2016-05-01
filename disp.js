@@ -51,16 +51,16 @@ $(function(){
 	var curURLCount = 0;
 	for (var i = 0; i < targArray.length; i++) {
 	    curURLCount++;
-	    if (prevURL != targ_array[i][0]) {
+	    if (prevURL != targArray[i][0]) {
 		curURLCount = 0; // いらない気もする
-		addCanvas(targ_array[i][0], count++, targ_array[i][1],
-			  targ_array[i][2], targ_array[i][3], targ_array[i][4],
-			  targ_array[i][5], curURLCount);
-		prevURL = targ_array[i][0];
+		addCanvas(targArray[i][0], count++, targArray[i][1],
+			  targArray[i][2], targArray[i][3], targArray[i][4],
+			  targArray[i][5], curURLCount);
+		prevURL = targArray[i][0];
 	    } else {
-		addBBox(targ_array[i][0], count, targ_array[i][1],
-			targ_array[i][2], targ_array[i][3], targ_array[i][4],
-			targ_array[i][5], curURLCount);
+		addBBox(targArray[i][0], count, targArray[i][1],
+			targArray[i][2], targArray[i][3], targArray[i][4],
+			targArray[i][5], curURLCount);
 	    }
 	}
 	return;
