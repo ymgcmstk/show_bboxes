@@ -1,5 +1,5 @@
 $(function(){
-    var colors = ['blue', 'green', 'navy', 'red', 'purple', 'maroon', 'gray'];
+    var colors = ['blue', 'green', 'red', 'navy', 'purple', 'maroon', 'gray'];
     function csv2Array(filePath) {
 	var csvData = new Array();
 	var data = new XMLHttpRequest();
@@ -73,9 +73,23 @@ $(function(){
 		prevURL = targArray[i][0];
 		bboxArray = [];
 	    }
+	    var targURLCount = curURLCount;
+	    for (var j = 0; j < bboxArray.length; j++) {
+		var areBBoxesSame = true;
+		for (var k = 0; k < 4; k++) {
+		    if (bboxArray[j][k] != targArray[i][k+1]) {
+			areBBoxesSame = false;
+			break;
+		    }
+		}
+		if (areBBoxesSame) {
+		    targURLCount = bboxArray[j][5];
+		    break;
+		}
+	    }
 	    bboxArray.push([targArray[i][1], targArray[i][2],
 			    targArray[i][3], targArray[i][4],
-			    targArray[i][5], curURLCount])
+			    targArray[i][5], targURLCount])
 	}
 	if (bboxArray.length > 0) {
 	    addCanvas(prevURL, count++, bboxArray);
