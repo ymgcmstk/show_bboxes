@@ -43,6 +43,7 @@ $(function(){
 	var cnvID =  'cnv' + curid.toString()
 	var ctx = $('#' + cnvID)[0].getContext('2d');
 	var thisColor = colors[curCount % colors.length];
+	ctx.lineWidth = 10;
 	ctx.strokeStyle = thisColor;
 	ctx.strokeRect(x1, y1, x2-x1, y2-y1);
 	$('#' + cnvID + 'div').append(
@@ -55,9 +56,17 @@ $(function(){
 	$('#' + cnvID + 'div').append('<br>');
 	return;
     }
+    function getEncodedURL(url) {
+	var cur_url = window.location.href.split('?')[0];
+	if (cur_url.substr(-1) == '/') {
+	    cur_url = cur_url.substr(0, cur_url.length-1);
+	}
+	return cur_url + '?url=' + encodeURIComponent(url);
+    }
     function rewriteBody(filePath) {
 	$('#images').empty();
-	$('#images').append('<h1>' + filePath + '</h1>');
+	$('#filepath').append('<h1>' + filePath + '</h1>');
+	$('#encodedurl').append(getEncodedURL(filePath));
 	var targArray = csv2Array(filePath);
 	var prevURL = '';
 	var count = 0;
@@ -96,7 +105,23 @@ $(function(){
 	}
 	return;
     }
+    function getUrlVars(){
+	var vars = {};
+	var param = location.search.substring(1).split('&');
+	for(var i = 0; i < param.length; i++) {
+            var keySearch = param[i].search(/=/);
+            var key = '';
+            if(keySearch != -1) key = param[i].slice(0, keySearch);
+            var val = param[i].slice(param[i].indexOf('=', 0) + 1);
+            if(key != '') vars[key] = decodeURI(val);
+	}
+	return vars;
+    }
     function getCSVPath() {
+	var vals = getUrlVars();
+	if ('url' in vals) {
+	    return decodeURIComponent(vals['url']);
+	}
 	return $('#images').attr('data-csv');
     }
 
