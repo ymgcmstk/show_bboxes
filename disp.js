@@ -66,7 +66,7 @@ $(function(){
     function rewriteBody(filePath) {
 	$('#images').empty();
 	$('#filepath').append('<h1>' + filePath + '</h1>');
-	$('#encodedurl').append(getEncodedURL(filePath));
+	$('#encodedurl').append('URL: ' + getEncodedURL(filePath));
 	var targArray = csv2Array(filePath);
 	var prevURL = '';
 	var count = 0;
